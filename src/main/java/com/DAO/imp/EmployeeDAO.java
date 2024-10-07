@@ -2,156 +2,134 @@ package com.DAO.imp;
 
 import com.DAO.inf.EmployeeDaoInterface;
 import com.entity.Employee;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
+import javax.persistence.*;
 import java.util.List;
 
 public class EmployeeDAO implements EmployeeDaoInterface {
 
-    private SessionFactory sessionFactory;
-
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     public EmployeeDAO() {
         try {
-            sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-            System.out.println("SessionFactory created successfully.");
+            entityManagerFactory = Persistence.createEntityManagerFactory("your-persistence-unit");  // Use the name of your persistence unit
+            entityManager = entityManagerFactory.createEntityManager();
+            System.out.println("EntityManagerFactory created successfully.");
         } catch (Exception e) {
-            System.out.println("Failed to create SessionFactory.");
+            System.out.println("Failed to create EntityManagerFactory.");
             e.printStackTrace();
         }
     }
 
     @Override
-
     public List<Employee> getAllEmployees() {
-        Session session = sessionFactory.openSession();
         List<Employee> employees = null;
         try {
-            employees = session.createQuery("from Employee", Employee.class).list();
+            entityManager.getTransaction().begin();
+            employees = entityManager.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
+            entityManager.getTransaction().commit();
+
             if (employees != null && !employees.isEmpty()) {
                 System.out.println("Employees fetched: " + employees.size());
             } else {
                 System.out.println("No employees found in the database.");
             }
         } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
         return employees;
     }
 
-
     @Override
     public void saveEmployee(Employee employee) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            session.saveOrUpdate(employee);
-            transaction.commit();
+            entityManager.getTransaction().begin();
+            entityManager.merge(employee);  // merge can handle both insert (if new) and update
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
-   @Override
+    @Override
     public void deleteEmployee(int employeeId) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            Employee employee = session.get(Employee.class, employeeId);
+            entityManager.getTransaction().begin();
+            Employee employee = entityManager.find(Employee.class, employeeId);
             if (employee != null) {
-                session.delete(employee);
+                entityManager.remove(employee);
             }
-            transaction.commit();
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
     @Override
     public void updateEmployee(Employee employee) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            session.update(employee);
-            transaction.commit();
+            entityManager.getTransaction().begin();
+            entityManager.merge(employee);  // merge for updates
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
     @Override
     public Employee getEmployeeById(int id) {
         Employee employee = null;
-
-        try (Session session = sessionFactory.openSession();) {
-
-            session.beginTransaction();
-
-            employee = session.get(Employee.class, id);
-
-            session.getTransaction().commit();
-
+        try {
+            employee = entityManager.find(Employee.class, id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return employee;  // Return the employee or null if not found
+        return employee;
     }
 
     public List<Employee> filter(String filterOption) {
-        Session session = sessionFactory.openSession();
         List<Employee> employees = null;
         try {
-            employees = session.createQuery("FROM Employee WHERE department = :filterOption", Employee.class)
-                    .setParameter("filterOption", filterOption)  // filter by department or whatever criteria you have
-                    .list();
-        } finally {
-            session.close();
+            employees = entityManager.createQuery("SELECT e FROM Employee e WHERE e.department = :filterOption", Employee.class)
+                    .setParameter("filterOption", filterOption)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return employees;
     }
-
 
     public List<Employee> search(String searchTerm) {
-        Session session = sessionFactory.openSession();
         List<Employee> employees = null;
         try {
-            employees = session.createQuery("FROM Employee WHERE name LIKE :searchTerm", Employee.class)
-                    .setParameter("searchTerm", "%" + searchTerm + "%")  // search for matching names
-                    .list();
-        } finally {
-            session.close();
+            employees = entityManager.createQuery("SELECT e FROM Employee e WHERE e.name LIKE :searchTerm", Employee.class)
+                    .setParameter("searchTerm", "%" + searchTerm + "%")
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return employees;
     }
 
-
     public void close() {
-        if (sessionFactory != null) {
-            sessionFactory.close();
+        if (entityManager != null) {
+            entityManager.close();
+        }
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
         }
     }
 }
