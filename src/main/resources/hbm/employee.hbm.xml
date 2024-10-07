@@ -1,0 +1,13 @@
+<hibernate-mapping>
+    <class name="com.entity.Employee" table="employee">
+        <id name="id" column="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string"/>
+        <property name="email" column="email" type="string"/>
+        <property name="phone" column="phone" type="string"/>
+        <property name="position" column="position" type="string"/>
+        <property name="department" column="department" type="string"/>
+        <property name="picture" column="picture" type="string"/>
+    </class>
+</hibernate-mapping>
