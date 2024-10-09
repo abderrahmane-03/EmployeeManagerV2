@@ -3,30 +3,30 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)  // For inheritance in JPA
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected int id;
 
-    private String firstName;
-    private String lastName;
+    protected String name;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    protected String email;
 
-    private String phoneNumber;
-    private Date dateOfBirth;
+    protected String phone;
+    protected Date DOB;
 
     @Column(unique = true)
-    private String socialSecurityNumber;
+    protected String SSN;
 
-    private String address;
-    private String jobTitle;
-    private Date hireDate;
-    private Double salary;
-    private Integer numberOfChildren;
+    protected String department;
+    protected String position;
+    protected Date hireDate;
+    protected String picture;
+    protected Double salary;
+    protected Integer numberOfChildren;
 
-    // Getters and Setters
+
 }

@@ -20,4 +20,45 @@ public class JobOffer {
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL)
     private List<Application> applications;
 
+    protected JobOffer(int id,String name,String requiredSkills,Recruiter recruiter){
+        this.id = id;
+        this.name = name;
+        this.requiredSkills = requiredSkills;
+        this.recruiter = recruiter;
+    }
+
+    public JobOffer() {
+
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getRequiredSkills() {
+        return requiredSkills;
+    }
+    public void setRequiredSkills(String requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
+    public Recruiter getRecruiter() {
+        return recruiter;
+    }
+    public void setRecruiter(Recruiter recruiter) {
+        this.recruiter = recruiter;
+    }
+    public List<Application> getApplications() {
+        return applications;
+    }
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
 }

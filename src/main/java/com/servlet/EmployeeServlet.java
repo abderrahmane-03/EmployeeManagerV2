@@ -4,16 +4,16 @@ import com.DAO.imp.EmployeeDAO;
 import com.DAO.inf.EmployeeDaoInterface;
 import com.entity.Employee;
 
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.Part;
-import java.nio.file.Paths;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 @MultipartConfig(
@@ -30,151 +30,127 @@ public class EmployeeServlet extends HttpServlet {
         employeeDao = new EmployeeDAO();
     }
 
-
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getServletPath();
 
-            switch (request.getServletPath()) {
-                case "/search":
-                    search(request,response);
-                case "/filter":
-                    filter(request,response);
-                    break;
-                case "/update":
-                    edit(request, response);
-                    break;
-                case "/delete":
-                    delete(request, response);
-                    break;
-
-                case "/home":
-                    list(request, response);
-                    break;
-            }
-         }
-
-
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        switch (request.getServletPath()) {
-
-            case "/create":
-                create(request, response);
+        switch (action) {
+            case "/search":
+                search(request, response);
                 break;
-            case "/edit":
-                update(request, response);
+            case "/filter":
+                filter(request, response);
                 break;
-
-
+            case "/update":
+                showEditForm(request, response);
+                break;
+            case "/delete":
+                deleteEmployee(request, response);
+                break;
+            case "/home":
+                listEmployees(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getServletPath();
 
-    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        employeeDao.deleteEmployee(id);
-        response.sendRedirect("/EmployManger/");
+        switch (action) {
+            case "/create":
+                createEmployee(request, response);
+                break;
+            case "/edit":
+                updateEmployee(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
-    private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void createEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Employee employee = new Employee();
+        populateEmployeeFromRequest(employee, request);
+
+        // Save employee and redirect
+        employeeDao.saveEmployee(employee);
+        response.sendRedirect("/EmployManager/home");
+    }
+
+    private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Employee employee = employeeDao.getEmployeeById(id);
+
+        populateEmployeeFromRequest(employee, request);
+
+        // Update employee and redirect
+        employeeDao.updateEmployee(employee);
+        response.sendRedirect("/EmployManager/home");
+    }
+
+    private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        employeeDao.deleteEmployee(id);
+        response.sendRedirect("/EmployManager/home");
+    }
+
+    private void listEmployees(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Employee> employees = employeeDao.getAllEmployees();
+        request.setAttribute("employeeList", employees);
+        forwardToPage(request, response, "/views/index.jsp");
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Employee employee = employeeDao.getEmployeeById(id);
+        request.setAttribute("employee", employee);
+        forwardToPage(request, response, "views/updateForm.jsp");
+    }
+
+    private void filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String filterOption = request.getParameter("filter");
+        List<Employee> filteredEmployees = employeeDao.filter(filterOption);
+        request.setAttribute("employeeList", filteredEmployees);
+        forwardToPage(request, response, "/views/index.jsp");
+    }
+
+    private void search(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String searchTerm = request.getParameter("search");
+        List<Employee> searchResults = employeeDao.search(searchTerm);
+        request.setAttribute("employeeList", searchResults);
+        forwardToPage(request, response, "/views/index.jsp");
+    }
+
+    private void populateEmployeeFromRequest(Employee employee, HttpServletRequest request) throws ServletException, IOException {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
-        String department = request.getParameter("department");
         String position = request.getParameter("position");
 
-
         Part filePart = request.getPart("picture");
-
-        if (filePart == null) {
-            throw new ServletException("File part is missing.");
-        }
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
 
+        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
+
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
-
-        Employee employee = new Employee();
         employee.setName(name);
         employee.setEmail(email);
         employee.setPhone(phone);
-        employee.setDepartment(department);
         employee.setPosition(position);
         employee.setPicture(fileName);
-        employeeDao.saveEmployee(employee);
-        response.sendRedirect("/EmployManger/");
     }
 
-    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        Employee existingEmployee = employeeDao.getEmployeeById(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/updateForm.jsp");
-        request.setAttribute("employee", existingEmployee);
+    private void forwardToPage(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);
     }
-
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Employee> employees = employeeDao.getAllEmployees();
-
-        request.setAttribute("employeeList", employees);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/index.jsp");
-        dispatcher.forward(request, response);}
-
-    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String  email = request.getParameter("email");
-        String  phone = request.getParameter("phone");
-        String position = request.getParameter("position");
-        String department = request.getParameter("department");
-        Part filePart = request.getPart("picture");
-
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdir();
-        }
-        String filePath = uploadPath + File.separator + fileName;
-        filePart.write(filePath);
-        Employee employee = new Employee();
-        employee.setId(id);
-        employee.setName(name);
-        employee.setEmail(email);
-        employee.setPhone(phone);
-        employee.setDepartment(department);
-        employee.setPosition(position);
-        employee.setPicture(fileName);
-
-        employeeDao.updateEmployee(employee);
-        response.sendRedirect("/EmployManger/");
-    }
-
-    public void filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String filterOption = request.getParameter("filter");  // get filter option from the form
-        List<Employee> filteredEmployees = employeeDao.filter(filterOption);
-        request.setAttribute("employeeList", filteredEmployees);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/index.jsp");
-        dispatcher.forward(request, response);  // forward to JSP to display results
-    }
-
-    public void search(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String searchTerm = request.getParameter("search");  // get search input from the form
-        List<Employee> searchResults = employeeDao.search(searchTerm);
-        request.setAttribute("employeeList", searchResults);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/index.jsp");
-        dispatcher.forward(request, response);  // forward to JSP to display results
-    }
-
-
 }
-

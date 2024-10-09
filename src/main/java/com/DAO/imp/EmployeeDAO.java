@@ -4,6 +4,7 @@ import com.DAO.inf.EmployeeDaoInterface;
 import com.entity.Employee;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.List;
 
 public class EmployeeDAO implements EmployeeDaoInterface {
@@ -124,6 +125,13 @@ public class EmployeeDAO implements EmployeeDaoInterface {
         return employees;
     }
 
+    public List<Employee> getEmployeesWithAllowancesBetween(Date startDate, Date endDate) {
+        String queryStr = "SELECT e FROM Employee e WHERE e.hireDate BETWEEN :startDate AND :endDate";
+        TypedQuery<Employee> query = entityManager.createQuery(queryStr, Employee.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
+    }
     public void close() {
         if (entityManager != null) {
             entityManager.close();
