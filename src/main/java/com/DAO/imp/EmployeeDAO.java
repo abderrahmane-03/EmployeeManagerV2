@@ -14,7 +14,7 @@ public class EmployeeDAO implements EmployeeDaoInterface {
 
     public EmployeeDAO() {
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("your-persistence-unit");  // Use the name of your persistence unit
+            entityManagerFactory = Persistence.createEntityManagerFactory("EmployeePU");  // Use the name of your persistence unit
             entityManager = entityManagerFactory.createEntityManager();
             System.out.println("EntityManagerFactory created successfully.");
         } catch (Exception e) {

@@ -16,9 +16,9 @@
 </div>
 
 <div style="padding:50px ">
-  <a href="http://localhost:2525/EmployManger/" class="button-50">Home</a>
+  <a href="http://localhost:8000/EmployManger/" class="button-50">Home</a>
 
-<form action="http://localhost:2525/EmployManger/edit" method="post" enctype="multipart/form-data">
+<form action="http://localhost:8000/EmployManger/edit" method="post" enctype="multipart/form-data">
   <div class="card">
     <header class="card-header">
       <div class="logo">

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class VacationDAO implements VacationDaoInterface {
@@ -27,6 +28,14 @@ public class VacationDAO implements VacationDaoInterface {
             entityManager.remove(vacation);
         }
     }
+    @Transactional
+    public List<Vacation> getVacationsBetween(Date startDate, Date endDate) {
+        return entityManager.createQuery("SELECT v FROM Vacation v WHERE v.startDate >= :startDate AND v.endDate <= :endDate", Vacation.class)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+    }
+
 
     @Transactional
     public void updateVacation(Vacation vacation) {

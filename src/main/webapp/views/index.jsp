@@ -26,11 +26,11 @@
 
         </c:when>
         <c:otherwise>
-        <form action="http://localhost:2525/EmployManger/search" method="GET">
+        <form action="http://localhost:8000/EmployManger/search" method="GET">
             <input class="button-50" type="search" name="search">
             <button class="button-50" type="submit">search</button>
         </form>
-        <form action="http://localhost:2525/EmployManger/filter" method="GET">
+        <form action="http://localhost:8000/EmployManger/filter" method="GET">
 
             <select class="button-50" name="filter">
                 <option value="RIPD">RIPD</option>

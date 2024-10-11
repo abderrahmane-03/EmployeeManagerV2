@@ -77,7 +77,7 @@ public class EmployeeServlet extends HttpServlet {
 
         // Save employee and redirect
         employeeDao.saveEmployee(employee);
-        response.sendRedirect("/EmployManager/home");
+        response.sendRedirect("/EmployManger/home");
     }
 
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -88,13 +88,13 @@ public class EmployeeServlet extends HttpServlet {
 
         // Update employee and redirect
         employeeDao.updateEmployee(employee);
-        response.sendRedirect("/EmployManager/home");
+        response.sendRedirect("/EmployManger/home");
     }
 
     private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         employeeDao.deleteEmployee(id);
-        response.sendRedirect("/EmployManager/home");
+        response.sendRedirect("/EmployManger/home");
     }
 
     private void listEmployees(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

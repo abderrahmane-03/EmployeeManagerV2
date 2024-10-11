@@ -27,8 +27,12 @@ public class Vacation {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    Vacation(int id,Date startDate,Date endDate,String reason,VacationStatus status,Date submittedDate,String justificationDocument,Employee employee){
-        this.id = id;
+
+    public Vacation() {
+
+    }
+
+    public Vacation(Date startDate, Date endDate, String reason, VacationStatus status, Date submittedDate, String justificationDocument, Employee employee) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.reason = reason;
@@ -38,10 +42,12 @@ public class Vacation {
         this.employee = employee;
     }
 
-    public Vacation() {
-
+    public Date getStartDate() {
+        return endDate;
     }
-
+    public void setStartDate(Date endDate) {
+        this.endDate = endDate;
+    }
     public Date getEndDate() {
         return endDate;
     }

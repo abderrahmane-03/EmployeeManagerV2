@@ -16,9 +16,9 @@
 </div>
 
 <div style="padding:50px ">
-    <a href="http://localhost:2525/EmployManger/" class="button-50">Home</a>
+    <a href="http://localhost:8000/EmployManger/" class="button-50">Home</a>
 
-    <form style="display: flex; justify-self: center; align-self: center" action="http://localhost:2525/EmployManger/create" method="post" enctype="multipart/form-data">
+    <form style="display: flex; justify-self: center; align-self: center" action="http://localhost:8000/EmployManger/create" method="post" enctype="multipart/form-data">
     <div class="card">
         <header class="card-header">
             <div class="logo">
@@ -105,9 +105,24 @@
             </div>
             <div class="label-row">
                 <span class="label left">ID</span>
-                <span class="label right">FIRST NAME</span>
+                <span class="label right">NAME</span>
             </div>
-
+            <div class="info-row">
+                <p class="info left"><input required type="text" class="inputs" name="SSN" placeholder="Social Security Number"></p>
+                <p class="info right"><input required type="date" class="inputs" name="DOB" placeholder="Enter date of birth"></p>
+            </div>
+            <div class="label-row">
+                <span class="label left">SSN</span>
+                <span class="label right">DOB</span>
+            </div>
+            <div class="info-row">
+                <p class="info left"><input required type="date" class="inputs" name="hire_date" placeholder="Hire date"></p>
+                <p class="info right"><input required type="number" class="inputs" name="salary" placeholder="Enter Salary"></p>
+            </div>
+            <div class="label-row">
+                <span class="label left">Hire Date</span>
+                <span class="label right">Salary</span>
+            </div>
             <div class="info-row">
                 <p class="info left">
                     <input required class="inputs" type="text" name="phone" placeholder="Enter Phone number"></p>
@@ -138,12 +153,12 @@
             </div>
 
             <div class="info-row">
-                <p class="info left">ARSTOTZKA</p>
-                <p class="info right">NO ALIAS</p>
+                <p class="info right"><input required class="inputs" type="number" name="number_of_children" placeholder="Enter Number of children"></p>
+                <p class="info right"><input required class="inputs" type="number" name="vacation" placeholder="Enter Vacation Sold"></p>
             </div>
             <div class="label-row">
-                <span class="label left">DISTRICT</span>
-                <span class="label right">ALIAS</span>
+                <span class="label left">NUMBER OF CHILDREN</span>
+                <span class="label right">VACATION SOLD</span>
             </div>
         </section>
 

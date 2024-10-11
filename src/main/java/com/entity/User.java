@@ -4,6 +4,7 @@ import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "\"User\"")
 public abstract class User {
 
     @Id

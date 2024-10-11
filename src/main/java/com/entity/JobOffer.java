@@ -16,7 +16,9 @@ public class JobOffer {
     @ManyToOne
     @JoinColumn(name = "recruiter_id")
     private Recruiter recruiter;
-
+    @ManyToOne
+    @JoinColumn(name = "admin_id") // Define the foreign key column
+    private Admin admin;
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL)
     private List<Application> applications;
 
