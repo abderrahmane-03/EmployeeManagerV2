@@ -6,11 +6,34 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table (name = "vacation")
 public class Vacation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Override
+    public String toString() {
+        return "Vacation{" +
+                "id=" + id +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", reason='" + reason + '\'' +
+                ", status=" + status +
+                ", submittedDate=" + submittedDate +
+                ", justificationDocument='" + justificationDocument + '\'' +
+                ", employee=" + employee +
+                '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     private Date startDate;
     private Date endDate;
@@ -43,10 +66,10 @@ public class Vacation {
     }
 
     public Date getStartDate() {
-        return endDate;
+        return startDate;
     }
-    public void setStartDate(Date endDate) {
-        this.endDate = endDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
     public Date getEndDate() {
         return endDate;

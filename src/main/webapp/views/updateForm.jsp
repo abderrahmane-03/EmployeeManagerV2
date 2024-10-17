@@ -108,7 +108,22 @@
         <span class="label left">I.D</span>
         <span class="label right">FIRST NAME</span>
       </div>
-
+      <div class="info-row">
+        <p class="info left"><input required type="text" value="${employee.ssn}" class="inputs" name="ssn" placeholder="Social Security Number"></p>
+        <p class="info right"><input required type="date" value="${employee.dob}" class="inputs" name="dob" placeholder="Enter date of birth"></p>
+      </div>
+      <div class="label-row">
+        <span class="label left">SSN</span>
+        <span class="label right">DOB</span>
+      </div>
+      <div class="info-row">
+        <p class="info left"><input required type="date" value="${employee.hire_date}" class="inputs" name="hire_date" placeholder="Hire date"></p>
+        <p class="info right"><input required type="number" value="${employee.salary}" class="inputs" name="salary" placeholder="Enter Salary"></p>
+      </div>
+      <div class="label-row">
+        <span class="label left">Hire Date</span>
+        <span class="label right">Salary</span>
+      </div>
       <div class="info-row">
         <p class="info left">
           <input required class="inputs" value="${employee.phone}" type="text" name="phone" placeholder="Enter Phone number"></p>
@@ -140,12 +155,12 @@
       </div>
 
       <div class="info-row">
-        <p class="info left">ARSTOTZKA</p>
-        <p class="info right">NO ALIAS</p>
+        <p class="info right"><input required class="inputs" type="number" value="${employee.number_of_children}"  name="number_of_children" placeholder="Enter Number of children"></p>
+        <p class="info right"><input required class="inputs" type="number" value="${employee.vacation}"  name="vacation" placeholder="Enter Vacation Sold"></p>
       </div>
       <div class="label-row">
-        <span class="label left">DISTRICT</span>
-        <span class="label right">ALIAS</span>
+        <span class="label left">NUMBER OF CHILDREN</span>
+        <span class="label right">VACATION SOLD</span>
       </div>
     </section>
 

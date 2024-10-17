@@ -6,12 +6,12 @@ public class FamilyAllowanceService {
 
     public double calculateAllowance(Employee employee) {
         double salary = employee.getSalary();
-        int numberOfChildren = employee.getNumberOfChildren();
+        double numberOfChildren = employee.getNumber_of_children();
         double totalAllowance = 0;
 
         if (numberOfChildren > 0) {
-            int firstBatch = Math.min(3, numberOfChildren); // First 3 children
-            int remainingChildren = Math.max(0, numberOfChildren - 3); // Remaining children
+            int firstBatch = (int) Math.min(3, numberOfChildren);
+            int remainingChildren = (int) Math.max(0, numberOfChildren - 3);
 
             if (salary < 6000) {
                 totalAllowance += firstBatch * 300;

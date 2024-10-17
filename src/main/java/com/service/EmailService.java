@@ -14,7 +14,7 @@ public class EmailService {
     public void sendEmail(String to, String subject, String content) {
         // Configure the email properties
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.your-email.com");  // SMTP server
+        props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -23,7 +23,7 @@ public class EmailService {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 // Return PasswordAuthentication using Strings
-                return new PasswordAuthentication("your-email@example.com", "your-email-password");
+                return new PasswordAuthentication("abdrahmanhafidi03@gmail.com", "dped kjjd rksc cyyz");
             }
         });
 

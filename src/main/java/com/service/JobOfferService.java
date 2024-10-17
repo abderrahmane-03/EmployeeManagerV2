@@ -9,7 +9,7 @@ public class JobOfferService {
     EmployeeDAO employeeDAO;
     EmailService emailService;
     public void notifyEmployeesOnJobUpdate(JobOffer jobOffer) {
-        List<Employee> employees = employeeDAO.getAllEmployees(); // Fetch relevant employees
+        List<Employee> employees = employeeDAO.getAllEmployees();
         String subject = "New Job Offer: " + jobOffer.getName();
         String message = "A new job offer is available: " + jobOffer.getRequiredSkills();
 

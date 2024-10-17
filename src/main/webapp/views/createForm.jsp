@@ -36,7 +36,7 @@
 
                 <input required id="file-input" name="picture" type="file" style="display: none;">
 
-                <!-- Cloud Image as File Trigger -->
+
                 <label for="file-input" style="cursor: pointer; position: absolute; top: 100px; left: 25px;">
                     <img src="${pageContext.request.contextPath}/static/pxu.png" style="height: 3rem; width: 3rem;">
                 </label>
@@ -108,8 +108,8 @@
                 <span class="label right">NAME</span>
             </div>
             <div class="info-row">
-                <p class="info left"><input required type="text" class="inputs" name="SSN" placeholder="Social Security Number"></p>
-                <p class="info right"><input required type="date" class="inputs" name="DOB" placeholder="Enter date of birth"></p>
+                <p class="info left"><input required type="text" class="inputs" name="ssn" placeholder="Social Security Number"></p>
+                <p class="info right"><input required type="date" class="inputs" name="dob" placeholder="Enter date of birth"></p>
             </div>
             <div class="label-row">
                 <span class="label left">SSN</span>

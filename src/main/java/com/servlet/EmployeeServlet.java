@@ -3,7 +3,9 @@ package com.servlet;
 import com.DAO.imp.EmployeeDAO;
 import com.DAO.inf.EmployeeDaoInterface;
 import com.entity.Employee;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,6 +16,9 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @MultipartConfig(
@@ -27,7 +32,7 @@ public class EmployeeServlet extends HttpServlet {
 
     @Override
     public void init() {
-        employeeDao = new EmployeeDAO();
+
     }
 
     @Override
@@ -72,15 +77,15 @@ public class EmployeeServlet extends HttpServlet {
     }
 
     private void createEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         Employee employee = new Employee();
         populateEmployeeFromRequest(employee, request);
-
-        // Save employee and redirect
         employeeDao.saveEmployee(employee);
         response.sendRedirect("/EmployManger/home");
     }
 
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         int id = Integer.parseInt(request.getParameter("id"));
         Employee employee = employeeDao.getEmployeeById(id);
 
@@ -92,18 +97,21 @@ public class EmployeeServlet extends HttpServlet {
     }
 
     private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         int id = Integer.parseInt(request.getParameter("id"));
         employeeDao.deleteEmployee(id);
         response.sendRedirect("/EmployManger/home");
     }
 
     private void listEmployees(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         List<Employee> employees = employeeDao.getAllEmployees();
         request.setAttribute("employeeList", employees);
         forwardToPage(request, response, "/views/index.jsp");
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         int id = Integer.parseInt(request.getParameter("id"));
         Employee employee = employeeDao.getEmployeeById(id);
         request.setAttribute("employee", employee);
@@ -111,6 +119,7 @@ public class EmployeeServlet extends HttpServlet {
     }
 
     private void filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         String filterOption = request.getParameter("filter");
         List<Employee> filteredEmployees = employeeDao.filter(filterOption);
         request.setAttribute("employeeList", filteredEmployees);
@@ -118,6 +127,7 @@ public class EmployeeServlet extends HttpServlet {
     }
 
     private void search(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        employeeDao = new EmployeeDAO();
         String searchTerm = request.getParameter("search");
         List<Employee> searchResults = employeeDao.search(searchTerm);
         request.setAttribute("employeeList", searchResults);
@@ -129,25 +139,64 @@ public class EmployeeServlet extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         String position = request.getParameter("position");
+        String department = request.getParameter("department");
+        String SSN = request.getParameter("ssn");
+        int Vacation = Integer.parseInt(request.getParameter("vacation"));
+        // Convert DOB (Date of Birth) to Date type
+        String dobString = request.getParameter("dob");
+        Date DOB = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            DOB = dateFormat.parse(dobString);
+        } catch (ParseException e) {
+            throw new ServletException("Invalid date format for DOB.", e);
+        }
 
+        // Ensure picture part is mandatory
         Part filePart = request.getPart("picture");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        if (filePart == null || filePart.getSize() == 0) {
+            throw new ServletException("Picture is mandatory.");
+        }
 
+        // Convert hireDate to Date type
+        String hireDateString = request.getParameter("hire_date");
+        Date hireDate = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            hireDate = dateFormat.parse(hireDateString);
+        } catch (ParseException e) {
+            throw new ServletException("Invalid date format for hireDate.", e);
+        }
+
+        // Convert salary and number of children to correct types
+        Double salary = Double.parseDouble(request.getParameter("salary"));
+        int numberOfChildren = Integer.parseInt(request.getParameter("number_of_children"));
+
+        // Handling file uploads (picture)
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
-
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
+        // Populate the Employee entity
         employee.setName(name);
         employee.setEmail(email);
         employee.setPhone(phone);
         employee.setPosition(position);
         employee.setPicture(fileName);
+        employee.setDob(DOB);
+        employee.setSsn(SSN);
+        employee.setSalary(salary);
+        employee.setDepartment(department);
+        employee.setHire_date(hireDate);
+        employee.setNumber_of_children(numberOfChildren);
+        employee.setVacation(Vacation);
     }
+
 
     private void forwardToPage(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(path);

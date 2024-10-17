@@ -49,15 +49,16 @@ public class EmployeeDAO implements EmployeeDaoInterface {
     public void saveEmployee(Employee employee) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(employee);  // merge can handle both insert (if new) and update
+            entityManager.persist(employee);  // merge handles both new and existing entities
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            e.printStackTrace();
+            throw e;  // Re-throw the exception to handle it in higher layers
         }
     }
+
 
     @Override
     public void deleteEmployee(int employeeId) {

@@ -129,7 +129,22 @@
                     <span class="label left">I.D</span>
                     <span class="label right">FIRST NAME</span>
                 </div>
-
+                <div class="info-row">
+                    <p class="info left">${employee.salary}</p>
+                    <p class="info right">${employee.hire_date}</p>
+                </div>
+                <div class="label-row">
+                    <span class="label left">SALARY</span>
+                    <span class="label right">HIRE DATE</span>
+                </div>
+                <div class="info-row">
+                    <p class="info left">${employee.dob}</p>
+                    <p class="info right">${employee.ssn}</p>
+                </div>
+                <div class="label-row">
+                    <span class="label left">DOB</span>
+                    <span class="label right">SSN</span>
+                </div>
                 <div class="info-row">
                     <p class="info left">${employee.phone}</p>
                     <p class="info right">${employee.email}</p>
@@ -149,12 +164,12 @@
                 </div>
 
                 <div class="info-row">
-                    <p class="info left">ARSTOTZKA</p>
-                    <p class="info right">NO ALIAS</p>
+                    <p class="info left">${employee.number_of_children}</p>
+                    <p class="info right">${employee.vacation}</p>
                 </div>
                 <div class="label-row">
-                    <span class="label left">DISTRICT</span>
-                    <span class="label right">ALIAS</span>
+                    <span class="label left">CHILDREN</span>
+                    <span class="label right">VACATION</span>
                 </div>
             </section>
 

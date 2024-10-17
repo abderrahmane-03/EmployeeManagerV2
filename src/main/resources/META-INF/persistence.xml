@@ -9,6 +9,14 @@
 
         <!-- JPA Database Configuration -->
         <class>com.entity.Employee</class>
+        <class>com.entity.Admin</class>
+        <class>com.entity.Application</class>
+        <class>com.entity.Evaluation</class>
+        <class>com.entity.JobOffer</class>
+        <class>com.entity.Recruiter</class>
+        <class>com.entity.User</class>
+        <class>com.entity.Vacation</class>
+
 
         <properties>
             <!-- JDBC Configuration -->

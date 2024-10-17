@@ -23,10 +23,7 @@ public class AbsenceReportService {
     }
 
     private List<AbsenceStats> aggregateVacations(List<Vacation> vacations) {
-        // Implement aggregation logic for the report here
-        // For instance, count how many days are vacations, sick days, unpaid leave, etc.
-        // Returning null for now, you can implement the logic based on your business needs.
-        return null;
+       return null;
     }
 }
 

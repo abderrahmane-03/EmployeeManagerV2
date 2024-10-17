@@ -4,8 +4,7 @@ import com.DAO.inf.VacationDaoInterface;
 import com.entity.Employee;
 import com.entity.Vacation;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Date;
@@ -15,6 +14,11 @@ public class VacationDAO implements VacationDaoInterface {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public VacationDAO() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EmployeePU");
+        this.entityManager = emf.createEntityManager();
+    }
 
     @Transactional
     public void saveVacation(Vacation vacation) {
@@ -38,9 +42,24 @@ public class VacationDAO implements VacationDaoInterface {
 
 
     @Transactional
-    public void updateVacation(Vacation vacation) {
-        entityManager.merge(vacation);
+     public void updateVacation(Vacation vacation) {
+        EntityTransaction transaction = null;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin(); // Start the transaction
+
+            entityManager.merge(vacation); // Perform the update
+            entityManager.flush();  // Flush the changes to the database
+
+            transaction.commit(); // Commit the transaction
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();  // Rollback if something goes wrong
+            }
+            throw e;  // Re-throw the exception for higher-level handling
+        }
     }
+
 
     public Vacation getVacationById(int id) {
         return entityManager.find(Vacation.class, id);
@@ -53,7 +72,20 @@ public class VacationDAO implements VacationDaoInterface {
     }
 
     public List<Vacation> getAllVacations() {
-        return entityManager.createQuery("SELECT v FROM Vacation v", Vacation.class).getResultList();
+        try {
+            entityManager.getTransaction().begin();
+            List<Vacation> vacations = entityManager.createQuery("SELECT v FROM Vacation v", Vacation.class).getResultList();
+            entityManager.getTransaction().commit();
+            System.out.println("here");
+
+            return vacations;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
